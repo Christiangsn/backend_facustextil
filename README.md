@@ -1,13 +1,34 @@
 # API
 
-O [FocusTextil](https://www.focustextil.com.br), estou disponibilizando um sistemas restfull como solicitado via teste.
+O [FocusTextil](https://www.focustextil.com.br), estou disponibilizando um sistemas restful como solicitado via teste.
 
 
-As dúvidas e solicitações, relacionadas ao acesso da API, devem ser enviadas para o e-mail christianguimaraes1996@gmail.com
+Para utilização de consumo desta API será necessario Postman ou  Insomnia, link para download estará abaixo.
 
-Para inicializar a aplicação, basta baixa ou aplicar um fork, em seguida abra no VSCode ou outro editor e leite de Codigo, e aplicar um npm install, logo em seguida já subirá e instalara as dependencias da aplicação!
+https://www.postman.com/   https://insomnia.rest/download
 
-PARA STARTA A APLICAÇÂO, ABRA SEU TERMINAL E DIGITE **NPM START**
+
+
+
+Para inicializar a aplicação, basta baixa ou aplicar um fork, em seguida você precisará ter VSCode ou outro editor e leite de Codigo.
+
+Caso não saiba 100% como lídar no github, basta acessar este link para saber como clonar https://www.atlassian.com/br/git/tutorials/setting-up-a-repository/git-clone
+para clonar um repositorio, você terá acesso nesta documentação completa:  https://docs.github.com/pt/github/creating-cloning-and-archiving-repositories/cloning-a-repository
+
+Ao Baixar a aplicação, vá até o terminal do seu editor e digite: 
+   +   
+        npm install
+
+
+ - Aguarde o download de todas as dependencias para poder utiliza de maneira certa.
+
+Logo após a instalação, a aplicação estár pronta para consumo. Ainda com seu terminal aberto digite: 
+   +   
+         npm install
+
+Sua aplicação já estará disponível após essses pequenos processos
+
+
 Recursos disponíveis para acesso via API:
 * [**Clientes**]
 * [**Pedidos**]
