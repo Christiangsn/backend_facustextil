@@ -15,8 +15,8 @@ Para inicializar a aplicação, basta baixa ou aplicar um fork, em seguida você
 Caso não saiba 100% como lídar no github, basta acessar este link para saber como clonar https://www.atlassian.com/br/git/tutorials/setting-up-a-repository/git-clone
 para clonar um repositorio, você terá acesso nesta documentação completa:  https://docs.github.com/pt/github/creating-cloning-and-archiving-repositories/cloning-a-repository
 
-Ao Baixar a aplicação, vá até o terminal do seu editor e digite: 
-   +   
+- Ao Baixar a aplicação, vá até o terminal do seu editor e digite: 
+      
         npm install
 
 
@@ -89,7 +89,7 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
 
 ### Utilizando o código de acesso [POST]
 
-    + Boby
+    - Boby
 
        Para ter acesso a registrar requisições, basta acessar as seguintes rotas:
 
@@ -99,7 +99,7 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
 
 ### Utilizando o código de acesso [PUT] - PARA QUALQUER REQUISIÇÂO, É NECESSARIO ESTAR AUTENTICADO
 
-    + Boby
+    - Boby
 
         /clients/:id - Com está rota você poderá editar algum campo do usuario a qual está autenticado.
         /requests/:id - Com está rota, você poderá alterar algum pedido, com um nova descrição
@@ -108,7 +108,7 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
 
 ### Utilizando o código de acesso [DELETE]
 
-    + Boby
+    - Boby
 
         /clients/:id - Com está rota você poderá deletar o usuario a qual está autenticado
         /requests/:id - Com está rota você poderá deletar algum request pelo id feito (será feito um log do seu ato)
@@ -122,7 +122,7 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
 
 ### Utilizando um exemplo de [POST]
 
-    + Boby
+    - Boby
 
         Para conseguir registrar um usuario, sua body deve seguir o exemplo abaixo:
 
@@ -145,7 +145,7 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
 
 ### Utilizando um exemplo de [PUT]
 
-    + Boby
+    - Boby
 
         Para conseguir editar, basta ter algum dos campos abaixos no body e enviar na rota de editar, juntamente com seu id por parametro
         {   
@@ -169,7 +169,7 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
 
 ### Utilizando um exemplo de [DELETE]
 
-    + Boby
+    - Boby
 
         Tenha certeza ao requesitar está rota, nada aqui poderá ser alterado e será registrado!
 
