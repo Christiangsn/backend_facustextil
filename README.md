@@ -1,6 +1,6 @@
 # API
 
-O [FocusTextil](https://www.focustextil.com.br), estou disponibilizando um sistemas restful como solicitado via teste.
+Olá,[FocusTextil](https://www.focustextil.com.br), estou disponibilizando um sistemas restful como solicitado via teste.
 
 
 Para utilização de consumo desta API será necessario Postman ou  Insomnia, link para download estará abaixo.
@@ -23,8 +23,8 @@ Ao Baixar a aplicação, vá até o terminal do seu editor e digite:
  - Aguarde o download de todas as dependencias para poder utiliza de maneira certa.
 
 Logo após a instalação, a aplicação estár pronta para consumo. Ainda com seu terminal aberto digite: 
-   +   
-         npm install
+     
+         npm start
 
 Sua aplicação já estará disponível após essses pequenos processos
 
@@ -39,7 +39,7 @@ Requisições para a API devem seguir os padrões HTTP:
 | Método | Descrição |
 |---|---|
 | `GET` | Retorna informações requisitadas. |
-| `POST` | Registr uma nova informação enviada. |
+| `POST` | Registrar uma nova informação enviada. |
 | `PUT` | Atualiza dados de alguma informação. |
 | `DELETE` | Remove um registro do sistema. |
 
@@ -176,11 +176,12 @@ Para inserir o token e ter acesso autenticado ao usuario, basta abrir o Postman,
         Para fazer isso, basta ter acesso ao ID do usuario ou da Requisição e implementar na rota como descrito acima!
 
 
-
-
-
 ### O BANCO DE DADOS É LIGADO DIRETAMENTE EM UMA CLOUD
 
+
+### SEGUE ABAIXO O MODELO DE UMA DOC GERADA DO LOG
+
+    Infomação apenas para orientação de qual maneira ela foi feita, não é possível manipular este arquivo nesta API.
     {
         "_id": PRIMARY KEY
         "request": Id da Pedido Alterado
