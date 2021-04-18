@@ -14,11 +14,6 @@ const ClientSchema = new mongoose.Schema({
         unique: true,
         require: true,
         lowercase: true,
-        validate:{
-            validator: validator.isEmail,
-            message: '{VALUE} is not a valid email',
-            isAsync: false
-          }
     },
     password: {
         type: String,
@@ -53,6 +48,14 @@ const ClientSchema = new mongoose.Schema({
     district: {
         type: String,
         require: true
+    },
+    passwordResetToken: {
+        type: String,
+        select: false,
+    },
+    passwordResetExpires: {
+        type: Date,
+        select: false,
     },
     oders:[{
         type: Schema.Types.ObjectId,

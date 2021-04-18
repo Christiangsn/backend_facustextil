@@ -1,25 +1,143 @@
-const client = require('../models/client');
+const Client = require('../models/client');
 const mongoose = require('mongoose');
-const InvalidFormat = require ('../errors/BadRequestException')
-const NotFoundException = require('../errors/NotFoundException')
-const ConflictException = require('../errors/ConflictException')
+const Errors = require('../errors/Exception/requestException/index');
+const bcrypt = require('bcryptjs');
+const generationToken = require('../config/authToken');
+const crypto = require('crypto');
+const sgMail = require('../modules/mail');
+
 
 class ClientController { 
 
     static async store (req, res, next) {
-        const email = req.body.email
-        const exists = await client.exists({ email })
-        
+        const email  = req.body.email;
+
+        const exists = await Client.findOne({ email })
         if (exists) 
-            return next(new ConflictException())
+            return next (Errors.BadException('Email already exists'))
+  
+        const user = await Client.create(req.body);
+        user.password = undefined;
 
-        const newClient = await client.create(req.body)
-        return res.status(204).json(newClient)    
-
+        return res.status(204).send({
+            user,
+            token: generationToken({ id: user.id}),
+        })    
     }
 
+    static async authenticate (req, res, next) {
+        const email = req.body.email;
+        const password = req.body.password;
+
+        const user = await Client.findOne({ email }).select('+password');
+        if (!user) 
+            return next (Errors.NotFoundException('User not found'))
+
+        if (!await bcrypt.compare(password, user.password))
+            return next (Errors.BadException('Password Invalid'))
+
+        user.password = undefined;
+
+        return res.send({
+            user,
+            token: generationToken({ id: user.id}),
+        })    
+    }
+
+    static async profile (req, res, next) {
+        const id  = req.userId
+
+        if (!mongoose.isValidObjectId(id)) 
+            return next (Errors.ConflictException('User validation error'))
+       
+        const user = await Client.findById(id).select('+password name email')  
+        user.id = undefined;
+
+        return res.send({ user })  
+    }
+
+    static async update (req, res, next) {
+        const id  = req.userId
+        const inf = req.body
+
+        if (!mongoose.isValidObjectId(id))
+            return next (Errors.BadException('User validation error'))
+
+        const user = await Client.findById(id).select('+password name email')
+
+        if(!user)
+           return next (Errors.NotFoundException('User not found'))
+
+        if( id != user.id)
+            return next (Errors.ForbiddenException('User validation error'))
+
+        user.set(inf)
+        await user.save()
+
+        const updated = await Client.findById(id).select('+password')
+        return res.status(200).json(updated) 
+    }
+
+    static async forgotPassword (req, res, next) {
+        const email = req.body
+
+        const user = await Client.findOne(email);
+        if (!user) 
+            return next (Errors.NotFoundException('User not found'))
+        
+        const token = crypto.randomBytes(10).toString('hex');
+        const now = new Date();
+        now.setHours(now.getHours() +1);
+
+        await Client.findByIdAndUpdate(user.id, {
+            '$set': {
+                passwordResetToken: token,
+                passwordResetExpires: now,
+            }
+        })
+
+        const message  = {
+            to: email,
+            from: {
+                email: "christianguimaraes1996@gmail.com"
+            },
+            subject: 'Forgot Password',
+            text: `hello, <br> Your code token is: ${token}`,
+            html: `<p>hello, <br> Your code token is:<b> ${token} </b></p>`,
+
+        }
+        sgMail.send(message)
+        
+        return res.send();
+    }
+
+    static async resetPassword (req, res, next) {
+        const { email, token, password} = req.body
+
+        const user = await Client.findOne({email}).select('+passwordResetToken passwordResetExpires')
+
+        if (!user) 
+            return next (Errors.NotFoundException('User not found'))
+
+        if (token !== user.passwordResetToken)
+           return next (Errors.BadException('token invalid'))
+
+        const now = new Date();
+
+        if (now > user.passwordResetExpires)
+            return next (Erros.UnauthorizedException('Token expired, generate a new one'))
+        
+        user.password = password;
+        await user.save();   
+        res.send();
+    }
+
+
+
+
+
     static async indexClient (req, res, next) {
-        const query = client.find()
+        const query = Client.find()
 
         if (req.query.email) {
             query.where('email').equals(req.query.email)
@@ -32,75 +150,6 @@ class ClientController {
 
         return res.status(200).json(costumers)   
     }
-
-    static async deleteClient (req, res, next) {
-        const { id } = req.params
-        const authHeader = req.headers.authorization
-    
-        if (!authHeader) {
-            const err = new Error('You are not authenticated!');
-            res.setHeader('WWW-Authenticate', 'Basic');
-                err.status = 401;
-            next(err);
-            return;
-        }
-        const auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-        const email = auth[0];
-        const exists = await client.findOne({ email })
-            .select('+id password')
-        
-        if(!exists)
-           return next(new NotFoundException())
-
-        if( id != exists.id)
-          return next(new NotFoundException())
-        
-        await client.findByIdAndDelete(id).exec()
-        return res.status(204).send();
-
-    }
-
-    static async editClient (req, res, next) {
-        const { id } = req.params
-        const inf = req.body
-        const authHeader = req.headers.authorization
-
-        if (!authHeader) {
-            const err = new Error('You are not authenticated!');
-            res.setHeader('WWW-Authenticate', 'Basic');
-                err.status = 401;
-            next(err);
-            return;
-        }
-        const auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-        const email = auth[0];
-        const exists = await client.findOne({ email })
-            .select('+id name email password telephone dateOfBirth address complement district oders')
-        
-        if(!exists)
-           return next(new NotFoundException())
-        if( id != exists.id)
-          return next(new NotFoundException())
-        
-        await client.findByIdAndUpdate(id , inf).exec()
-        const clientAt = await client.findById(id);
-        return res.status(200).json(clientAt)  
-    }
-
-    static async oneClient (req, res, next) {
-        const { id } = req.params
-
-        if (!mongoose.isValidObjectId(id)) 
-            return next(new InvalidFormat())
-       
-        const resultClient = await client.findById(id).select('+password')  
-        if (!resultClient) 
-            return next(new NotFoundException())
-
-        return res.status(200).json(resultClient)    
-    }
-
-
 
 }
 

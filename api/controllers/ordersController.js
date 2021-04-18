@@ -1,7 +1,6 @@
 const oders = require('../models/orders');
 const client = require('../models/client');
-const NotOderException = require('../errors/NotOderException');
-const NotFoundException = require('../errors/NotFoundException')
+
 const log = require('../models/logCollection');
 
 class OdersController {
@@ -20,7 +19,7 @@ class OdersController {
         const email = auth[0];
         const exists = await client.findOne({ email })
             .select('+id')
-        if(!exists)3
+        if(!exists)
            return next(new NotFoundException())
 
         const newRequest = { ...req.body, client: exists.id }
@@ -36,14 +35,12 @@ class OdersController {
 
     static async indexRequest (req, res, next) {
         const query = oders.find()
-
         const requests = await query.exec()
         return res.status(200).json(requests)  
 
     }
 
     static async deletRequest (req, res, next) {
-
         const { id } = req.params
         const deleted = "Delete";
         const authHeader = req.headers.authorization
