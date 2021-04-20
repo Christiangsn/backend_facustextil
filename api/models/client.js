@@ -59,16 +59,19 @@ const ClientSchema = new mongoose.Schema({
     },
     oders:[{
         type: Schema.Types.ObjectId,
-        ref: "Oders"
+        ref: "Oders",
+        select: false        
     }],
     logs:[{
         type: Schema.Types.ObjectId,
-        ref: "Logs"
+        ref: "Logs",
+        select: false
     }],
     createdAt: {
         type: Date,
         default: Date.now,
         minLength: 10, maxLength: 10,
+        select: false,
         validate: (v) => validator.isDate(v, {format: 'YYYY/MM/DD'})
     }
 })

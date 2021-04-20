@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const generationToken = require('../config/authToken');
 const crypto = require('crypto');
 const sgMail = require('../modules/mail');
+const multer = require('multer');
 
 
 class ClientController { 
@@ -39,7 +40,6 @@ class ClientController {
         user.password = undefined;
 
         return res.send({
-            user,
             token: generationToken({ id: user.id}),
         })    
     }
@@ -99,7 +99,7 @@ class ClientController {
         const message  = {
             to: email,
             from: {
-                email: "christianguimaraes1996@gmail.com"
+                email: "christian_gs159@hotmail.com"
             },
             subject: 'Forgot Password',
             text: `hello, <br> Your code token is: ${token}`,
@@ -133,9 +133,6 @@ class ClientController {
     }
 
 
-
-
-
     static async indexClient (req, res, next) {
         const query = Client.find()
 
@@ -146,7 +143,7 @@ class ClientController {
             query.sort('createdAt')
         }
 
-        const costumers = await query.select('+password').exec()
+        const costumers = await query.exec()
 
         return res.status(200).json(costumers)   
     }
