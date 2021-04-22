@@ -12,18 +12,26 @@ class ClientController {
 
     static async store (req, res, next) {
         const email  = req.body.email;
+        const body = req.body;
+        const profile = { ...body, image: { 
+            name: req.file.originalname,
+            size: req.file.size,
+            key: req.file.filename,
+            url: ''
+         }}     
 
         const exists = await Client.findOne({ email })
         if (exists) 
             return next (Errors.BadException('Email already exists'))
   
-        const user = await Client.create(req.body);
+        const user = await Client.create(profile); 
         user.password = undefined;
 
         return res.status(204).send({
             user,
             token: generationToken({ id: user.id}),
         })    
+  
     }
 
     static async authenticate (req, res, next) {

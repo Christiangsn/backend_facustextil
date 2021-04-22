@@ -1,26 +1,39 @@
 const multer = require('multer');
+const path = require('path');
+const crypto = require('crypto');
 
-
-module.exports.files={
-
-    storage:function(){
-        let storage = multer.diskStorage({
-        destination: function (req, file, nex) {
-          nex(null, '../public/files')
+module.exports = {
+    dest: path.resolve(__dirname, '..', 'public', 'files'),
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.resolve(__dirname, '..', 'public', 'files'));
         },
-        filename: function (req, file, nex) {
-            nex(null, file.profile)
+        filename: (req, file, cb) => {
+            crypto.randomBytes(16, (err, hash) => {
+                if (err) cb(err);
+
+                const fileName = `${hash.toString('hex')}-${file.originalname}`;
+
+                cb(null, fileName);
+            })
+        },
+    }),
+    limits: {
+        fileSize: 2 * 1024 * 1024,
+    },
+    fileFilter: (req, file, cb) => {
+        const allowredMimes = [
+            'image/jpeg',
+            'image/pjpeg',
+            'image/png',
+            'image/gif'
+        ];
+
+        if (allowredMimes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb( new Error("Invalid file type."));
         }
-    })
-      
-    return storage;
-},
-    allowedFile:function(req, file, cb) {
-        
-        if (!file.profile.match(/\.(pdf|doc|txt|jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
-            req.fileValidationError = 'Only  files are allowed!';
-            return cb(new Error('Only  files are allowed!'), false);
-        }
-        cb(null, true);
-    }
+    } 
+
 }

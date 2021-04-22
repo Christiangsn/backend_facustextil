@@ -2,10 +2,13 @@ const { Router } = require ('express');
 const ClientController = require('../controllers/clientController');
 const OdersController = require('../controllers/ordersController');
 const authMiddleware = require('../middlewares/auth');
+const multer = require('multer');
+const multerMiddleware = require('../middlewares/upload-middleware');
 
 const router = Router();
 
-router.post('/register', ClientController.store);
+router.post('/register', multer(multerMiddleware).single('file'), ClientController.store);
+
 router.post('/login/authenticate', ClientController.authenticate);
 router.post('/forgotpassword', ClientController.forgotPassword);
 router.put('/reset_password', ClientController.resetPassword);

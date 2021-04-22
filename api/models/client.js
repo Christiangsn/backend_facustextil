@@ -9,6 +9,17 @@ const ClientSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    image: {
+        name: String,
+        size: Number,
+        key: String,
+        url: String,
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        require: false
+    },
     email: {
         type: String,
         unique: true,
@@ -22,7 +33,6 @@ const ClientSchema = new mongoose.Schema({
     },
     telephone: {
         type: String,
-        require: true,
         validate: {
             validator: function(v) {
                 return /\d{2} (\d{1} )?\d{4}-\d{4}/.test(v);
@@ -32,7 +42,6 @@ const ClientSchema = new mongoose.Schema({
     },
     dateOfBirth: {
         type: Date,
-        require: true,
         minLength: 10, maxLength: 10,
         validate: (v) => validator.isDate(v, {format: 'YYYY/MM/DD'})
     },
@@ -80,6 +89,10 @@ ClientSchema.pre('save', function(next) {
     const user = this;
     SALT_WORK_FACTOR = 10,
     REQUIRED_PASSWORD_LENGTH = 8;
+    if(!user.image.url) {
+        user.image.url = `http://localhost:3000/files/${user.image.key}`;
+    }
+    
     if (!user.isModified('password')) return next();
     bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
         if (err) return next(err);
@@ -92,6 +105,7 @@ ClientSchema.pre('save', function(next) {
             next();
         });
     });
+   
 });
 
 
